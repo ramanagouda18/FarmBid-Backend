@@ -1,0 +1,21 @@
+const express=require('express')
+require('dotenv').config()
+const cors=require('cors')
+const ConfigureDb = require('./config/db')
+const { checkSchema } = require('express-validator')
+const {userRegisterValidation, userLoginValidation} = require('./app/validations/userRegisterValidation')
+const userCltr=require('./app/controllers/userController')
+const { authenticateUser, authorizeUser } = require('./app/middlewares/auth')
+const app=express()
+app.use(express.json())
+app.use(cors())
+ConfigureDb()
+const port=3000
+app.post('/api/register',checkSchema(userRegisterValidation),userCltr.register)
+app.post('/api/login',checkSchema(userLoginValidation),userCltr.login)
+app.get('/api/vegetables' , authenticateUser , authorizeUser(['buyer']) , (req,res)=>{
+    res.send('all vegetables')
+})
+app.listen(port,()=>{
+    console.log("app is running on port " + port)
+})
