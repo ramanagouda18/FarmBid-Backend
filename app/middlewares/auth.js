@@ -6,7 +6,7 @@ const authenticateUser=async(req,res,next)=>{
         if(!token){
             return res.status(401).json('token is required')
         }
-        const tokenData=await jwt.verify(token,process.env.JWT_SECRET_KEY)
+        const tokenData= jwt.verify(token,process.env.JWT_SECRET_KEY)
         req.user={
             id:tokenData.id,
             role:tokenData.role
